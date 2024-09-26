@@ -6,6 +6,7 @@ document.getElementById("formulario").addEventListener("submit", function(event)
     gerarPDF(numeroProcedimento);
 });
 
+
 function gerarPDF(numero) {
     const doc = new jsPDF(); // Inicializa o PDF
 
