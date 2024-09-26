@@ -16,7 +16,7 @@ function gerarPDF(numero) {
     doc.text(numero, doc.internal.pageSize.getWidth() / 2, doc.internal.pageSize.getHeight() / 2, { align: 'center' });
 
     // Gera o QR Code
-    const qrCodeUrl = `https://meusite.com/leitura?procedimento=${numero}`;
+    const qrCodeUrl = `https://arquivo-driguatu-production.up.railway.app=${numero}`;
     const qrCodeImg = generateQRCode(qrCodeUrl);
 
     // Coloca o QR Code no canto superior direito
