@@ -1,6 +1,5 @@
-document.getElementById("formulario").addEventListener("submit", function(event) {
-    event.preventDefault();  // Evita o comportamento padrão do formulário
-    
+// Função chamada quando o botão "Gerar PDF" é clicado
+function gerarPDF() {
     const numeroProcedimento = document.getElementById("procedimento").value;
 
     if (!numeroProcedimento) {
@@ -8,32 +7,31 @@ document.getElementById("formulario").addEventListener("submit", function(event)
         return;
     }
 
-    // Chama a função para gerar o PDF com o QR Code
-    gerarPDF(numeroProcedimento);
-});
+    // Inicializa o jsPDF
+    const doc = new jsPDF();
 
-function gerarPDF(numero) {
-    const doc = new jsPDF();  // Inicializa o PDF
-
-    // Adiciona o texto do número do procedimento (Arial 22, centralizado)
+    // Adiciona o número do procedimento no centro da página (Arial 22)
     doc.setFont('Arial');
     doc.setFontSize(22);
-    doc.text(numero, doc.internal.pageSize.getWidth() / 2, doc.internal.pageSize.getHeight() / 2, { align: 'center' });
+    doc.text(numeroProcedimento, doc.internal.pageSize.getWidth() / 2, doc.internal.pageSize.getHeight() / 2, { align: 'center' });
+
+    // Gera a URL para o QR Code
+    const qrCodeUrl = `https://arquivo-driguatu-production.up.railway.app/leitura?procedimento=${numeroProcedimento}`;
 
     // Gera o QR Code
-    const qrCodeUrl = `https://arquivo-driguatu-production.up.railway.app/leitura?procedimento=${numero}`;
     const qrCodeImg = generateQRCode(qrCodeUrl);
 
-    // Adiciona o QR Code no canto superior direito (100x100)
+    // Adiciona o QR Code no PDF (canto superior direito)
     doc.addImage(qrCodeImg, 'PNG', doc.internal.pageSize.getWidth() - 110, 10, 100, 100);
 
     // Salva o PDF
-    doc.save(`procedimento_${numero}.pdf`);
+    doc.save(`procedimento_${numeroProcedimento}.pdf`);
 }
 
+// Função para gerar o QR Code
 function generateQRCode(text) {
-    const qr = qrcode(0, 'L');  // Inicializa o QR Code
-    qr.addData(text);  // Adiciona o texto (URL) ao QR Code
-    qr.make();  // Gera o QR Code
-    return qr.createDataURL();  // Retorna a imagem do QR Code
+    const qr = qrcode(0, 'L');
+    qr.addData(text);
+    qr.make();
+    return qr.createDataURL();
 }
