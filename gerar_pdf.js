@@ -2,7 +2,12 @@ const express = require('express');
 const fs = require('fs');
 const path = require('path');
 const app = express();
-const PORT = 3000;
+
+// Use a porta definida pela variável de ambiente ou 3000 como fallback
+const PORT = process.env.PORT || 3000;
+
+// Configura o Express para servir arquivos estáticos da pasta "public"
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Serve a página inicial
 app.get('/', (req, res) => {
@@ -26,7 +31,7 @@ app.get('/leitura', (req, res) => {
     res.send('Leitura registrada com sucesso!');
 });
 
-// Inicia o servidor
+// Inicia o servidor na porta fornecida pelo Railway ou 3000 para desenvolvimento local
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });
