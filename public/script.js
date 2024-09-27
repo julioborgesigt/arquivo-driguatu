@@ -7,7 +7,8 @@ function gerarPDF() {
         return;
     }
 
-    // Inicializa o jsPDF
+    // Inicializa o jsPDF corretamente
+    const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
     // Adiciona o número do procedimento no centro da página (Arial 22)
