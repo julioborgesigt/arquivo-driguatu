@@ -4,7 +4,7 @@ const path = require('path');
 const app = express();
 
 // Use a porta definida pela variável de ambiente ou 3000 como fallback
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 // Configura o Express para servir arquivos estáticos da pasta "public"
 app.use(express.static(path.join(__dirname, 'public')));
