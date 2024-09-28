@@ -76,14 +76,14 @@ function generateQRCode(text) {
 // Função para ler QR Code
 function lerQRCode() {
     const qrReaderElement = document.getElementById("qr-reader");
-    qrReaderElement.style.display = "block";
+    qrReaderElement.style.display = "block"; // Mostrar o leitor de QR code
 
-    const html5QrCode = new Html5Qrcode("qr-reader");
+    const html5QrCode = new Html5Qrcode("qr-reader"); // Iniciando o leitor de QR code
     html5QrCode.start(
-        { facingMode: "environment" }, 
+        { facingMode: "environment" },  // Abre a câmera traseira
         {
-            fps: 10, 
-            qrbox: { width: 250, height: 250 }
+            fps: 10,  // Taxa de quadros por segundo
+            qrbox: { width: 250, height: 250 }  // Tamanho da área de leitura
         },
         qrCodeMessage => {
             fetch('/leitura', {
@@ -95,7 +95,7 @@ function lerQRCode() {
             }).then(response => response.json()).then(data => {
                 alert("QR Code lido com sucesso!");
                 html5QrCode.stop();
-                qrReaderElement.style.display = "none";
+                qrReaderElement.style.display = "none"; // Esconder o leitor
             });
         },
         errorMessage => {
@@ -105,3 +105,4 @@ function lerQRCode() {
         console.log(`Erro ao iniciar a câmera: ${err}`);
     });
 }
+
