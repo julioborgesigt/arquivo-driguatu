@@ -3,35 +3,56 @@ const fs = require('fs');
 const path = require('path');
 const app = express();
 
-// Use a porta definida pela variável de ambiente ou 3000 como fallback
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-// Configura o Express para servir arquivos estáticos da pasta "public"
+app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Serve a página inicial
+// Serve o arquivo HTML
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html')); // Servindo o index.html na raiz
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Rota para capturar a leitura do QR Code
-app.get('/leitura', (req, res) => {
-    const procedimento = req.query.procedimento;
-    const leitor = req.headers['user-agent'];
+// Rota de login
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+    const banco = JSON.parse(fs.readFileSync('banco.json'));
 
-    // Lê o banco de dados
-    let banco = JSON.parse(fs.readFileSync('banco.json'));
+    const user = banco.usuarios.find(user => user.username === username && user.password === password);
+    if (user) {
+        res.json({ success: true, user });
+    } else {
+        res.json({ success: false });
+    }
+});
 
-    // Adiciona a nova leitura
-    banco.leituras.push({ procedimento, leitor, data: new Date() });
+// Rota de cadastro
+app.post('/register', (req, res) => {
+    const { username, password } = req.body;
+    const banco = JSON.parse(fs.readFileSync('banco.json'));
 
-    // Salva no banco de dados
+    if (banco.usuarios.find(user => user.username === username)) {
+        return res.json({ success: false, message: "Usuário já existe." });
+    }
+
+    banco.usuarios.push({ username, password });
+    fs.writeFileSync('banco.json', JSON.stringify(banco, null, 2));
+    res.json({ success: true });
+});
+
+// Rota de leitura do QR Code
+app.post('/leitura', (req, res) => {
+    const { qrCodeMessage } = req.body;
+    const banco = JSON.parse(fs.readFileSync('banco.json'));
+    const usuario = req.headers['user-agent'];
+
+    banco.leituras.push({ qrCodeMessage, usuario, data: new Date() });
     fs.writeFileSync('banco.json', JSON.stringify(banco, null, 2));
 
-    res.send('Leitura registrada com sucesso!');
+    res.json({ success: true });
 });
 
-// Inicia o servidor na porta fornecida pelo Railway ou 3000 para desenvolvimento local
+// Inicia o servidor
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });

@@ -4,16 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerar Procedimento</title>
+
+    <!-- Incluindo bibliotecas jsPDF e QR Code -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
-    <script src="script.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.0.10/html5-qrcode.min.js"></script>
+
+    <!-- Arquivo JS -->
+    <script src="/script.js" defer></script>
 </head>
 <body>
-    <h1>Gerar Procedimento</h1>
-    <form id="formulario">
-        <label for="procedimento">Número do Procedimento:</label>
-        <input type="text" id="procedimento" name="procedimento" required>
-        <button type="button" onclick="gerarPDF()">Gerar PDF</button>
-    </form>
+    <!-- Formulário de Login/Cadastro -->
+    <div id="auth-container">
+        <h2>Login ou Cadastro</h2>
+        <form id="auth-form">
+            <label for="username">Usuário:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Senha:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="button" onclick="login()">Entrar</button>
+            <button type="button" onclick="register()">Cadastrar</button>
+        </form>
+    </div>
+
+    <!-- Interface após login -->
+    <div id="app-container" style="display: none;">
+        <h1>Bem-vindo, <span id="user-name"></span></h1>
+        <form id="formulario">
+            <label for="procedimento">Número do Procedimento:</label>
+            <input type="text" id="procedimento" name="procedimento" required>
+            <button type="button" onclick="gerarPDF()">Gerar PDF</button>
+            <button type="button" onclick="lerQRCode()">Ler QR Code</button>
+        </form>
+        <div id="qr-reader" style="width: 500px; display: none;"></div>
+    </div>
 </body>
 </html>
