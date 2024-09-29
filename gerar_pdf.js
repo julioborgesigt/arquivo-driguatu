@@ -5,26 +5,7 @@ const app = express();
 
 const PORT = 3000;
 
-const fs = require('fs');
-const path = require('path');
 
-// Rota para servir a página de consulta
-app.get('/consulta', (req, res) => {
-    res.sendFile(path.join(__dirname, 'consulta.html'));
-});
-
-// Rota para obter os dados do banco.json
-app.get('/dados', (req, res) => {
-    fs.readFile('banco.json', 'utf8', (err, data) => {
-        if (err) {
-            console.error(err);
-            res.status(500).json({ message: "Erro ao ler o banco de dados" });
-        } else {
-            const jsonData = JSON.parse(data);
-            res.json(jsonData);
-        }
-    });
-});
 
 
 
@@ -79,4 +60,23 @@ app.post('/leitura', (req, res) => {
 // Inicia o servidor
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
+});
+
+
+// Rota para servir a página de consulta
+app.get('/consulta', (req, res) => {
+    res.sendFile(path.join(__dirname, 'consulta.html'));
+});
+
+// Rota para obter os dados do banco.json
+app.get('/dados', (req, res) => {
+    fs.readFile('banco.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error(err);
+            res.status(500).json({ message: "Erro ao ler o banco de dados" });
+        } else {
+            const jsonData = JSON.parse(data);
+            res.json(jsonData);
+        }
+    });
 });
