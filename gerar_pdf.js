@@ -62,8 +62,11 @@ app.post('/leitura', (req, res) => {
     const banco = JSON.parse(fs.readFileSync('banco.json'));
     const usuario = req.headers['user-agent']; // Você pode substituir isso pelo sistema de login real
 
+    // Limpar espaços em branco ou caracteres extras no qrCodeMessage
+    const qrCodeValue = qrCodeMessage.trim();
+
     // Procurar o procedimento correspondente
-    const procedimento = banco.procedimentos.find(p => p.numero === qrCodeMessage);
+    const procedimento = banco.procedimentos.find(p => p.numero === qrCodeValue);
 
     if (procedimento) {
         // Adicionar a leitura ao procedimento
@@ -81,6 +84,7 @@ app.post('/leitura', (req, res) => {
         res.status(404).json({ success: false, message: "Procedimento não encontrado!" });
     }
 });
+
 
 
 // Inicia o servidor

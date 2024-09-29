@@ -91,6 +91,7 @@ function lerQRCode() {
             qrbox: { width: 250, height: 250 }  // Tamanho da caixa de leitura
         },
         qrCodeMessage => {
+            console.log("Valor do QR Code:", qrCodeMessage); // Debug para verificar o valor do QR code
             fetch('/leitura', {
                 method: 'POST',
                 headers: {
@@ -122,6 +123,7 @@ function lerQRCode() {
         console.log(`Erro ao iniciar a câmera: ${err}`);
     });
 }
+
 
 
 
