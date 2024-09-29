@@ -77,17 +77,18 @@ function generateQRCode(text) {
     return qr.createDataURL();
 }
 
+
 // Função para ler QR Code
 function lerQRCode() {
     const qrReaderElement = document.getElementById("qr-reader");
     qrReaderElement.style.display = "block"; // Mostrar o leitor de QR code
 
-    const html5QrCode = new Html5Qrcode("qr-reader"); // Iniciando o leitor de QR code
+    const html5QrCode = new Html5Qrcode("qr-reader");
     html5QrCode.start(
-        { facingMode: "environment" },  // Abre a câmera traseira
+        { facingMode: "environment" },  // Câmera traseira
         {
-            fps: 10,  // Taxa de quadros por segundo
-            qrbox: { width: 250, height: 250 }  // Tamanho da área de leitura
+            fps: 10,  // Taxa de quadros
+            qrbox: { width: 250, height: 250 }  // Tamanho da caixa de leitura
         },
         qrCodeMessage => {
             fetch('/leitura', {
@@ -96,19 +97,32 @@ function lerQRCode() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ qrCodeMessage })
-            }).then(response => response.json()).then(data => {
-                alert("QR Code lido com sucesso!");
-                html5QrCode.stop();
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message); // Exibe mensagem de sucesso
+                } else {
+                    alert("Erro: " + data.message); // Exibe mensagem de erro
+                }
+                html5QrCode.stop(); // Para o leitor de QR code
                 qrReaderElement.style.display = "none"; // Esconder o leitor
+            })
+            .catch(error => {
+                console.error('Erro ao registrar leitura:', error);
+                alert('Erro ao registrar leitura. Tente novamente.');
+                html5QrCode.stop();
+                qrReaderElement.style.display = "none";
             });
         },
         errorMessage => {
-            console.log(`QR Code não detectado: ${errorMessage}`);
+            console.log(`Erro ao ler QR Code: ${errorMessage}`);
         }
     ).catch(err => {
         console.log(`Erro ao iniciar a câmera: ${err}`);
     });
 }
+
 
 
 
