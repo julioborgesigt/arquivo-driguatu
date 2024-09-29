@@ -1,26 +1,30 @@
 // Função para realizar o login
 function login() {
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
 
     fetch('/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username, password }),
     })
     .then(response => response.json())
     .then(data => {
-        if (data.success) {
-            document.getElementById("auth-container").style.display = "none";
-            document.getElementById("app-container").style.display = "block";
-            document.getElementById("user-name").innerText = data.user.username;
+        if (data.message === "Login realizado com sucesso") {
+            alert(data.message);
+            // Exibir a interface do app
+            document.getElementById('auth-container').style.display = 'none';
+            document.getElementById('app-container').style.display = 'block';
+            document.getElementById('user-name').textContent = data.usuario.username;
         } else {
-            alert("Usuário ou senha incorretos");
+            alert(data.message);
         }
-    });
+    })
+    .catch(error => console.error('Erro ao realizar login:', error));
 }
+
 
 // Função para realizar o cadastro
 function register() {
