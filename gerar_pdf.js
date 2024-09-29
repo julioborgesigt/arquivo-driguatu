@@ -86,6 +86,31 @@ app.post('/leitura', (req, res) => {
 });
 
 
+// Rota para salvar o procedimento no banco de dados
+app.post('/salvarProcedimento', (req, res) => {
+    const { numero } = req.body;
+    const banco = JSON.parse(fs.readFileSync('banco.json', 'utf8'));
+
+    // Verificar se o procedimento já existe
+    const procedimentoExistente = banco.procedimentos.find(p => p.numero === numero);
+
+    if (procedimentoExistente) {
+        return res.json({ success: true, message: "Procedimento já existe." });
+    }
+
+    // Adicionar o novo procedimento
+    banco.procedimentos.push({
+        numero: numero,
+        leituras: []
+    });
+
+    // Salvar no banco de dados
+    fs.writeFileSync('banco.json', JSON.stringify(banco, null, 2));
+
+    res.json({ success: true, message: "Procedimento salvo com sucesso." });
+});
+
+
 
 // Inicia o servidor
 app.listen(PORT, () => {

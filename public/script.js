@@ -48,6 +48,7 @@ function register() {
     });
 }
 
+
 // Função para gerar o PDF
 function gerarPDF() {
     const numeroProcedimento = document.getElementById("procedimento").value;
@@ -57,16 +58,37 @@ function gerarPDF() {
         return;
     }
 
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    doc.setFont('Arial');
-    doc.setFontSize(22);
-    doc.text(numeroProcedimento, doc.internal.pageSize.getWidth() / 2, doc.internal.pageSize.getHeight() / 2, { align: 'center' });
+    // Salvar o número do procedimento no banco de dados
+    fetch('/salvarProcedimento', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ numero: numeroProcedimento })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Se o procedimento foi salvo, gera o PDF
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.setFont('Arial');
+            doc.setFontSize(22);
+            doc.text(numeroProcedimento, doc.internal.pageSize.getWidth() / 2, doc.internal.pageSize.getHeight() / 2, { align: 'center' });
 
-    const qrCodeUrl = `https://arquivo-driguatu-production.up.railway.app/leitura?procedimento=${numeroProcedimento}`;
-    const qrCodeImg = generateQRCode(qrCodeUrl);
-    doc.addImage(qrCodeImg, 'PNG', doc.internal.pageSize.getWidth() - 110, 10, 100, 100);
-    doc.save(`procedimento_${numeroProcedimento}.pdf`);
+            const qrCodeUrl = `https://arquivo-driguatu-production.up.railway.app/leitura?procedimento=${numeroProcedimento}`;
+            const qrCodeImg = generateQRCode(qrCodeUrl);
+            doc.addImage(qrCodeImg, 'PNG', doc.internal.pageSize.getWidth() - 110, 10, 100, 100);
+
+            doc.save(`procedimento_${numeroProcedimento}.pdf`);
+        } else {
+            alert("Erro ao salvar o procedimento: " + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Erro ao salvar o procedimento:', error);
+        alert('Erro ao salvar o procedimento. Tente novamente.');
+    });
 }
 
 // Função para gerar QR Code
@@ -76,6 +98,7 @@ function generateQRCode(text) {
     qr.make();
     return qr.createDataURL();
 }
+
 
 
 // Função para ler QR Code
