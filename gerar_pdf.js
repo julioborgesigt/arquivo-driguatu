@@ -21,15 +21,26 @@ app.get('/', (req, res) => {
 // Rota de login
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
-    const banco = JSON.parse(fs.readFileSync('banco.json'));
 
-    const user = banco.usuarios.find(user => user.username === username && user.password === password);
-    if (user) {
-        res.json({ success: true, user });
-    } else {
-        res.json({ success: false });
-    }
+    fs.readFile('banco.json', 'utf8', (err, data) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ message: "Erro ao ler o banco de dados" });
+        }
+
+        const bancoDados = JSON.parse(data);
+
+        // Verificar se o usuário existe e a senha está correta
+        const usuario = bancoDados.usuarios.find(u => u.username === username && u.password === password);
+
+        if (usuario) {
+            res.status(200).json({ message: "Login realizado com sucesso", usuario: usuario });
+        } else {
+            res.status(401).json({ message: "Usuário ou senha incorretos" });
+        }
+    });
 });
+
 
 // Rota de cadastro
 app.post('/register', (req, res) => {
