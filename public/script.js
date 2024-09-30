@@ -122,14 +122,8 @@ function generateQRCode(text) {
 // Função para ler QR Code
 function lerQRCode() {
     const qrReaderElement = document.getElementById("qr-reader");
-    const usuarioAtivo = localStorage.getItem('usuarioAtivo'); // Pega o usuário logado
-
-    if (!usuarioAtivo) {
-        alert("Usuário não está logado. Por favor, faça o login novamente.");
-        return;
-    }
-
     qrReaderElement.style.display = "block"; // Mostrar o leitor de QR code
+
     const html5QrCode = new Html5Qrcode("qr-reader");
     let leituraEfetuada = false; // Flag para garantir que só uma leitura seja registrada
 
@@ -143,18 +137,21 @@ function lerQRCode() {
             if (!leituraEfetuada) {
                 leituraEfetuada = true; // Marca como já lido para evitar múltiplas leituras
 
+                console.log("Valor do QR Code:", qrCodeMessage); // Debug para verificar o valor lido
+
                 fetch('/leitura', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ qrCodeMessage, usuario: usuarioAtivo })
+                    body: JSON.stringify({ qrCodeMessage })
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
                         alert(data.message); // Exibe mensagem de sucesso
-                        window.location.href = `/comprovante?procedimento=${qrCodeMessage}`;
+                        // Redirecionar para a página de comprovante com o número do procedimento
+                        window.location.href = `/comprovante?procedimento=${data.procedimento}`;
                     } else {
                         alert("Erro: " + data.message); // Exibe mensagem de erro
                     }
@@ -176,6 +173,7 @@ function lerQRCode() {
         console.log(`Erro ao iniciar a câmera: ${err}`);
     });
 }
+
 
 
 
