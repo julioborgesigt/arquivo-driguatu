@@ -107,6 +107,8 @@ function lerQRCode() {
     qrReaderElement.style.display = "block"; // Mostrar o leitor de QR code
 
     const html5QrCode = new Html5Qrcode("qr-reader");
+    let leituraEfetuada = false; // Flag para garantir que só uma leitura seja registrada
+
     html5QrCode.start(
         { facingMode: "environment" },  // Câmera traseira
         {
@@ -114,30 +116,37 @@ function lerQRCode() {
             qrbox: { width: 250, height: 250 }  // Tamanho da caixa de leitura
         },
         qrCodeMessage => {
-            console.log("Valor do QR Code:", qrCodeMessage); // Debug para verificar o valor do QR code
-            fetch('/leitura', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ qrCodeMessage })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message); // Exibe mensagem de sucesso
-                } else {
-                    alert("Erro: " + data.message); // Exibe mensagem de erro
-                }
-                html5QrCode.stop(); // Para o leitor de QR code
-                qrReaderElement.style.display = "none"; // Esconder o leitor
-            })
-            .catch(error => {
-                console.error('Erro ao registrar leitura:', error);
-                alert('Erro ao registrar leitura. Tente novamente.');
-                html5QrCode.stop();
-                qrReaderElement.style.display = "none";
-            });
+            if (!leituraEfetuada) {
+                leituraEfetuada = true; // Marca como já lido para evitar múltiplas leituras
+
+                console.log("Valor do QR Code:", qrCodeMessage); // Debug para verificar o valor lido
+
+                fetch('/leitura', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ qrCodeMessage })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message); // Exibe mensagem de sucesso
+                        // Redirecionar para a página de comprovante
+                        window.location.href = `/comprovante?procedimento=${qrCodeMessage}`;
+                    } else {
+                        alert("Erro: " + data.message); // Exibe mensagem de erro
+                    }
+                    html5QrCode.stop(); // Para o leitor de QR code
+                    qrReaderElement.style.display = "none"; // Esconder o leitor
+                })
+                .catch(error => {
+                    console.error('Erro ao registrar leitura:', error);
+                    alert('Erro ao registrar leitura. Tente novamente.');
+                    html5QrCode.stop();
+                    qrReaderElement.style.display = "none";
+                });
+            }
         },
         errorMessage => {
             console.log(`Erro ao ler QR Code: ${errorMessage}`);
@@ -146,6 +155,7 @@ function lerQRCode() {
         console.log(`Erro ao iniciar a câmera: ${err}`);
     });
 }
+
 
 
 
