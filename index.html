@@ -14,6 +14,55 @@
 
     <!-- Arquivo JS -->
     <script src="/script.js" defer></script>
+    
+    <script>
+    function lerQRCode() {
+        const qrReaderElement = document.getElementById("qr-reader");
+        qrReaderElement.style.display = "block"; // Mostrar o leitor de QR code
+    
+        const html5QrCode = new Html5Qrcode("qr-reader");
+        html5QrCode.start(
+            { facingMode: "environment" },  // Câmera traseira
+            {
+                fps: 10,  // Taxa de quadros
+                qrbox: { width: 250, height: 250 }  // Tamanho da caixa de leitura
+            },
+            qrCodeMessage => {
+                console.log("Valor do QR Code:", qrCodeMessage); // Log para verificar o valor lido
+    
+                fetch('/leitura', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ qrCodeMessage })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message); // Exibe mensagem de sucesso
+                    } else {
+                        alert("Erro: " + data.message); // Exibe mensagem de erro
+                    }
+                    html5QrCode.stop(); // Para o leitor de QR code
+                    qrReaderElement.style.display = "none"; // Esconder o leitor
+                })
+                .catch(error => {
+                    console.error('Erro ao registrar leitura:', error);
+                    alert('Erro ao registrar leitura. Tente novamente.');
+                    html5QrCode.stop();
+                    qrReaderElement.style.display = "none";
+                });
+            },
+            errorMessage => {
+                console.log(`Erro ao ler QR Code: ${errorMessage}`);
+            }
+        ).catch(err => {
+            console.log(`Erro ao iniciar a câmera: ${err}`);
+        });
+    }
+</script>
+
 </head>
 <body>
     <!-- Formulário de Login/Cadastro -->

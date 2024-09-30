@@ -58,15 +58,20 @@ app.post('/register', (req, res) => {
 
 // Rota de leitura do QR Code
 app.post('/leitura', (req, res) => {
-    const { qrCodeMessage } = req.body; // Assumindo que o qrCodeMessage contém o número do procedimento
-    const banco = JSON.parse(fs.readFileSync('banco.json'));
-    const usuario = req.headers['user-agent']; // Você pode substituir isso pelo sistema de login real
+    const { qrCodeMessage } = req.body; // Supondo que o qrCodeMessage seja a URL completa do QR code
+    const banco = JSON.parse(fs.readFileSync('banco.json', 'utf8'));
+    const usuario = req.headers['user-agent']; // Obter o usuário que está fazendo a leitura
 
-    // Limpar espaços em branco ou caracteres extras no qrCodeMessage
-    const qrCodeValue = qrCodeMessage.trim();
+    // Extrair o número do procedimento da URL do QR code
+    const urlParams = new URLSearchParams(new URL(qrCodeMessage).search);
+    const numeroProcedimento = urlParams.get('procedimento');
 
-    // Procurar o procedimento correspondente
-    const procedimento = banco.procedimentos.find(p => p.numero === qrCodeValue);
+    if (!numeroProcedimento) {
+        return res.status(400).json({ success: false, message: "Número do procedimento não encontrado na URL." });
+    }
+
+    // Procurar o procedimento correspondente no banco de dados
+    const procedimento = banco.procedimentos.find(p => p.numero === numeroProcedimento);
 
     if (procedimento) {
         // Adicionar a leitura ao procedimento
@@ -76,7 +81,7 @@ app.post('/leitura', (req, res) => {
             hora: new Date().toTimeString().split(' ')[0] // Hora no formato HH:MM:SS
         });
 
-        // Escrever de volta no banco de dados
+        // Salvar o banco de dados atualizado
         fs.writeFileSync('banco.json', JSON.stringify(banco, null, 2));
 
         res.json({ success: true, message: "Leitura registrada com sucesso!" });
@@ -84,6 +89,7 @@ app.post('/leitura', (req, res) => {
         res.status(404).json({ success: false, message: "Procedimento não encontrado!" });
     }
 });
+
 
 
 // Rota para salvar o procedimento no banco de dados
