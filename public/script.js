@@ -132,8 +132,8 @@ function lerQRCode() {
                 .then(data => {
                     if (data.success) {
                         alert(data.message); // Exibe mensagem de sucesso
-                        // Redirecionar para a página de comprovante
-                        window.location.href = `/comprovante?procedimento=${qrCodeMessage}`;
+                        // Redirecionar para a página de comprovante com o número do procedimento
+                        window.location.href = `/comprovante?procedimento=${data.procedimento}`;
                     } else {
                         alert("Erro: " + data.message); // Exibe mensagem de erro
                     }
@@ -155,6 +155,7 @@ function lerQRCode() {
         console.log(`Erro ao iniciar a câmera: ${err}`);
     });
 }
+
 
 
 

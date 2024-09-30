@@ -58,7 +58,7 @@ app.post('/register', (req, res) => {
 
 // Rota de leitura do QR Code
 app.post('/leitura', (req, res) => {
-    const { qrCodeMessage } = req.body; // Supondo que o qrCodeMessage seja a URL completa do QR code
+    const { qrCodeMessage } = req.body; // Assumindo que o qrCodeMessage seja a URL completa do QR code
     const banco = JSON.parse(fs.readFileSync('banco.json', 'utf8'));
     const usuario = req.headers['user-agent']; // Obter o usuário que está fazendo a leitura
 
@@ -84,11 +84,13 @@ app.post('/leitura', (req, res) => {
         // Salvar o banco de dados atualizado
         fs.writeFileSync('banco.json', JSON.stringify(banco, null, 2));
 
-        res.json({ success: true, message: "Leitura registrada com sucesso!" });
+        // Após salvar o procedimento, responder com sucesso
+        res.json({ success: true, message: "Leitura registrada com sucesso!", procedimento: numeroProcedimento });
     } else {
         res.status(404).json({ success: false, message: "Procedimento não encontrado!" });
     }
 });
+
 
 
 
