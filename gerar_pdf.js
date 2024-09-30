@@ -58,10 +58,11 @@ app.post('/register', (req, res) => {
 
 // Rota de leitura do QR Code
 app.post('/leitura', (req, res) => {
-    const { qrCodeMessage, usuario } = req.body;
+    const { qrCodeMessage } = req.body; // Assumindo que o qrCodeMessage seja a URL completa do QR code
     const banco = JSON.parse(fs.readFileSync('banco.json', 'utf8'));
+    const usuario = req.headers['user-agent']; // Obter o usuário que está fazendo a leitura
 
-    // Extração do número do procedimento da URL do QR code
+    // Extrair o número do procedimento da URL do QR code
     const urlParams = new URLSearchParams(new URL(qrCodeMessage).search);
     const numeroProcedimento = urlParams.get('procedimento');
 
@@ -75,7 +76,7 @@ app.post('/leitura', (req, res) => {
     if (procedimento) {
         // Adicionar a leitura ao procedimento
         procedimento.leituras.push({
-            usuario, // Usar o nome do usuário ativo
+            usuario,
             data: new Date().toISOString().split('T')[0], // Data no formato YYYY-MM-DD
             hora: new Date().toTimeString().split(' ')[0] // Hora no formato HH:MM:SS
         });
@@ -83,6 +84,7 @@ app.post('/leitura', (req, res) => {
         // Salvar o banco de dados atualizado
         fs.writeFileSync('banco.json', JSON.stringify(banco, null, 2));
 
+        // Após salvar o procedimento, responder com sucesso
         res.json({ success: true, message: "Leitura registrada com sucesso!", procedimento: numeroProcedimento });
     } else {
         res.status(404).json({ success: false, message: "Procedimento não encontrado!" });
@@ -97,7 +99,7 @@ app.post('/leitura', (req, res) => {
 
 // Rota para salvar o procedimento no banco de dados
 app.post('/salvarProcedimento', (req, res) => {
-    const { numero, usuario } = req.body; // Receber o usuário do frontend
+    const { numero } = req.body; // Receber o usuário do frontend
     const banco = JSON.parse(fs.readFileSync('banco.json', 'utf8'));
 
     // Verificar se o procedimento já existe
@@ -110,7 +112,6 @@ app.post('/salvarProcedimento', (req, res) => {
     // Adicionar o novo procedimento com o usuário que o registrou
     banco.procedimentos.push({
         numero: numero,
-        usuario: usuario, // Salvar o usuário ativo
         leituras: []
     });
 
