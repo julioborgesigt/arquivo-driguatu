@@ -60,8 +60,8 @@ app.post('/register', (req, res) => {
 app.post('/leitura', (req, res) => {
     const { qrCodeMessage } = req.body; // Assumindo que o qrCodeMessage seja a URL completa do QR code
     const banco = JSON.parse(fs.readFileSync('banco.json', 'utf8'));
-    const usuario = req.headers['user-agent']; // Obter o usuário que está fazendo a leitura
-
+    const usuario = localStorage.getItem('usuarioAtivo'); // Obter o usuário que está fazendo a leitura
+    
     // Extrair o número do procedimento da URL do QR code
     const urlParams = new URLSearchParams(new URL(qrCodeMessage).search);
     const numeroProcedimento = urlParams.get('procedimento');

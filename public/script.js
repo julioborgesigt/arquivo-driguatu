@@ -123,7 +123,7 @@ function generateQRCode(text) {
 function lerQRCode() {
     const qrReaderElement = document.getElementById("qr-reader");
     qrReaderElement.style.display = "block"; // Mostrar o leitor de QR code
-
+    
     const html5QrCode = new Html5Qrcode("qr-reader");
     let leituraEfetuada = false; // Flag para garantir que só uma leitura seja registrada
 
