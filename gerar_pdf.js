@@ -94,12 +94,9 @@ app.post('/leitura', (req, res) => {
 
 
 
-
-
-
 // Rota para salvar o procedimento no banco de dados
 app.post('/salvarProcedimento', (req, res) => {
-    const { numero } = req.body; // Receber o usuário do frontend
+    const { numero } = req.body;
     const banco = JSON.parse(fs.readFileSync('banco.json', 'utf8'));
 
     // Verificar se o procedimento já existe
@@ -109,7 +106,7 @@ app.post('/salvarProcedimento', (req, res) => {
         return res.json({ success: true, message: "Procedimento já existe." });
     }
 
-    // Adicionar o novo procedimento com o usuário que o registrou
+    // Adicionar o novo procedimento
     banco.procedimentos.push({
         numero: numero,
         leituras: []
@@ -120,7 +117,6 @@ app.post('/salvarProcedimento', (req, res) => {
 
     res.json({ success: true, message: "Procedimento salvo com sucesso." });
 });
-
 
 
 
