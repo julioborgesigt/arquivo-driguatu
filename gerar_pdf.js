@@ -124,6 +124,50 @@ app.listen(PORT, () => {
 });
 
 
+// Rota para exibir o comprovante
+app.get('/comprovante', (req, res) => {
+    const numeroProcedimento = req.query.procedimento;
+    const banco = JSON.parse(fs.readFileSync('banco.json', 'utf8'));
+
+    // Procurar o procedimento correspondente
+    const procedimento = banco.procedimentos.find(p => p.numero === numeroProcedimento);
+
+    if (procedimento) {
+        // Renderizar uma página de comprovante
+        res.send(`
+            <!DOCTYPE html>
+            <html lang="pt-br">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Comprovante de Leitura</title>
+                <style>
+                    body { font-family: Arial, sans-serif; }
+                    .container { text-align: center; margin-top: 50px; }
+                    .info { font-size: 18px; }
+                    .info p { margin: 10px 0; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <h1>Comprovante de Leitura</h1>
+                    <div class="info">
+                        <p><strong>Procedimento:</strong> ${numeroProcedimento}</p>
+                        <p><strong>Última Leitura:</strong> ${procedimento.leituras[procedimento.leituras.length - 1].data} ${procedimento.leituras[procedimento.leituras.length - 1].hora}</p>
+                        <p><strong>Usuário:</strong> ${procedimento.leituras[procedimento.leituras.length - 1].usuario}</p>
+                    </div>
+                    <button onclick="window.print()">Imprimir Comprovante</button>
+                </div>
+            </body>
+            </html>
+        `);
+    } else {
+        res.status(404).send('Procedimento não encontrado.');
+    }
+});
+
+
+
 // Rota para servir a página de consulta
 app.get('/consulta', (req, res) => {
     res.sendFile(path.join(__dirname, 'consulta.html'));
