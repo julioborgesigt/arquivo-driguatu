@@ -56,6 +56,7 @@ function register() {
 }
 
 
+
 // Função para gerar o PDF
 // Função para gerar o PDF
 function gerarPDF() {
@@ -90,6 +91,7 @@ function gerarPDF() {
             doc.setFontSize(22);
             doc.text(numeroProcedimento, doc.internal.pageSize.getWidth() / 2, doc.internal.pageSize.getHeight() / 2, { align: 'center' });
 
+            // Gera a URL correta para o QR Code
             const qrCodeUrl = `https://arquivo-driguatu-production.up.railway.app/leitura?procedimento=${numeroProcedimento}`;
             const qrCodeImg = generateQRCode(qrCodeUrl);
             doc.addImage(qrCodeImg, 'PNG', doc.internal.pageSize.getWidth() - 110, 10, 100, 100);
@@ -104,6 +106,7 @@ function gerarPDF() {
         alert('Erro ao salvar o procedimento. Tente novamente.');
     });
 }
+
 
 
 // Função para gerar QR Code
