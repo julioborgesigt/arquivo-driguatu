@@ -1,7 +1,8 @@
-// Função para realizar o login
+
+// Função para realizar login
 function login() {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+    const username = document.getElementById('login-username').value;
+    const password = document.getElementById('login-password').value;
 
     fetch('/login', {
         method: 'POST',
@@ -14,16 +15,22 @@ function login() {
     .then(data => {
         if (data.message === "Login realizado com sucesso") {
             alert(data.message);
+            // Armazenar o nome de usuário no localStorage
+            localStorage.setItem('usuarioAtivo', username);
             // Exibir a interface do app
             document.getElementById('auth-container').style.display = 'none';
             document.getElementById('app-container').style.display = 'block';
-            document.getElementById('user-name').textContent = data.usuario.username;
+            document.getElementById('user-name').textContent = username;
         } else {
-            alert(data.message);
+            alert("Erro no login: " + data.message);
         }
     })
-    .catch(error => console.error('Erro ao realizar login:', error));
+    .catch(error => {
+        console.error('Erro ao realizar login:', error);
+        alert('Erro ao realizar login. Verifique a conexão.');
+    });
 }
+
 
 
 // Função para realizar o cadastro
@@ -50,26 +57,33 @@ function register() {
 
 
 // Função para gerar o PDF
+// Função para gerar o PDF
 function gerarPDF() {
     const numeroProcedimento = document.getElementById("procedimento").value;
+    const usuarioAtivo = localStorage.getItem('usuarioAtivo'); // Pega o usuário logado
 
     if (!numeroProcedimento) {
         alert("Por favor, insira o número do procedimento.");
         return;
     }
 
-    // Salvar o número do procedimento no banco de dados
+    if (!usuarioAtivo) {
+        alert("Usuário não está logado. Por favor, faça o login novamente.");
+        return;
+    }
+
+    // Salvar o número do procedimento no banco de dados com o usuário ativo
     fetch('/salvarProcedimento', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ numero: numeroProcedimento })
+        body: JSON.stringify({ numero: numeroProcedimento, usuario: usuarioAtivo })
     })
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Se o procedimento foi salvo, gera o PDF
+            // Gera o PDF se o procedimento foi salvo
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             doc.setFont('Arial');
@@ -91,6 +105,7 @@ function gerarPDF() {
     });
 }
 
+
 // Função para gerar QR Code
 function generateQRCode(text) {
     const qr = qrcode(0, 'L');
@@ -104,8 +119,14 @@ function generateQRCode(text) {
 // Função para ler QR Code
 function lerQRCode() {
     const qrReaderElement = document.getElementById("qr-reader");
-    qrReaderElement.style.display = "block"; // Mostrar o leitor de QR code
+    const usuarioAtivo = localStorage.getItem('usuarioAtivo'); // Pega o usuário logado
 
+    if (!usuarioAtivo) {
+        alert("Usuário não está logado. Por favor, faça o login novamente.");
+        return;
+    }
+
+    qrReaderElement.style.display = "block"; // Mostrar o leitor de QR code
     const html5QrCode = new Html5Qrcode("qr-reader");
     let leituraEfetuada = false; // Flag para garantir que só uma leitura seja registrada
 
@@ -119,21 +140,18 @@ function lerQRCode() {
             if (!leituraEfetuada) {
                 leituraEfetuada = true; // Marca como já lido para evitar múltiplas leituras
 
-                console.log("Valor do QR Code:", qrCodeMessage); // Debug para verificar o valor lido
-
                 fetch('/leitura', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ qrCodeMessage })
+                    body: JSON.stringify({ qrCodeMessage, usuario: usuarioAtivo })
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
                         alert(data.message); // Exibe mensagem de sucesso
-                        // Redirecionar para a página de comprovante com o número do procedimento
-                        window.location.href = `/comprovante?procedimento=${data.procedimento}`;
+                        window.location.href = `/comprovante?procedimento=${qrCodeMessage}`;
                     } else {
                         alert("Erro: " + data.message); // Exibe mensagem de erro
                     }
@@ -155,6 +173,7 @@ function lerQRCode() {
         console.log(`Erro ao iniciar a câmera: ${err}`);
     });
 }
+
 
 
 
