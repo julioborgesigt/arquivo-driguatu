@@ -1,8 +1,8 @@
 
 // Função para realizar login
 function login() {
-    const username = document.getElementById('login-username').value;
-    const password = document.getElementById('login-password').value;
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
 
     fetch('/login', {
         method: 'POST',
