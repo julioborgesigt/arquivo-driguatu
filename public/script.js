@@ -122,14 +122,8 @@ function generateQRCode(text) {
 // Função para ler QR Code
 function lerQRCode() {
     const qrReaderElement = document.getElementById("qr-reader");
-    const usuarioAtivo = localStorage.getItem('usuarioAtivo'); // Pega o usuário logado
-
-    if (!usuarioAtivo) {
-        alert("Usuário não está logado. Por favor, faça o login novamente.");
-        return;
-    }
-
     qrReaderElement.style.display = "block"; // Mostrar o leitor de QR code
+
     const html5QrCode = new Html5Qrcode("qr-reader");
     let leituraEfetuada = false; // Flag para garantir que só uma leitura seja registrada
 
@@ -179,6 +173,8 @@ function lerQRCode() {
         console.log(`Erro ao iniciar a câmera: ${err}`);
     });
 }
+
+
 
 
 
