@@ -109,15 +109,6 @@ function gerarPDF() {
 
 
 
-// Função para gerar QR Code
-function generateQRCode(text) {
-    const qr = qrcode(0, 'L');
-    qr.addData(text);
-    qr.make();
-    return qr.createDataURL();
-}
-
-
 
 // Função para ler QR Code
 function lerQRCode() {
