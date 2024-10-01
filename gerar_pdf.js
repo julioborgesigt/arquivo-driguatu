@@ -190,3 +190,18 @@ app.get('/dados', (req, res) => {
         }
     });
 });
+
+// Rota para consultar movimentação
+app.get('/consultaMovimentacao', (req, res) => {
+    const { procedimento } = req.query;
+    const banco = JSON.parse(fs.readFileSync('banco.json', 'utf8'));
+
+    // Procurar o procedimento correspondente no banco de dados
+    const procedimentoEncontrado = banco.procedimentos.find(p => p.numero === procedimento);
+
+    if (procedimentoEncontrado) {
+        res.json({ success: true, leituras: procedimentoEncontrado.leituras });
+    } else {
+        res.json({ success: false, message: "Procedimento não encontrado." });
+    }
+});
