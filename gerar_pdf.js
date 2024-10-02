@@ -249,3 +249,8 @@ app.post('/resetSenha', (req, res) => {
         res.json({ success: false, message: "Usuário não encontrado." });
     }
 });
+
+// Rota para servir a página do administrador
+app.get('/administrador', (req, res) => {
+    res.sendFile(path.join(__dirname, 'administrador.html'));
+});
