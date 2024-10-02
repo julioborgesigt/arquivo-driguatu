@@ -43,18 +43,30 @@ app.post('/login', (req, res) => {
 
 
 // Rota de cadastro
+// Rota de cadastro (register)
 app.post('/register', (req, res) => {
     const { username, password } = req.body;
-    const banco = JSON.parse(fs.readFileSync('banco.json'));
 
-    if (banco.usuarios.find(user => user.username === username)) {
-        return res.json({ success: false, message: "Usuário já existe." });
+    // Validar que a senha tem exatamente 6 dígitos numéricos
+    if (!/^\d{6}$/.test(password)) {
+        return res.status(400).json({ success: false, message: "A senha deve ter exatamente 6 dígitos numéricos." });
     }
 
-    banco.usuarios.push({ username, password });
-    fs.writeFileSync('banco.json', JSON.stringify(banco, null, 2));
-    res.json({ success: true });
+    const banco = JSON.parse(fs.readFileSync('banco.json', 'utf8'));
+
+    // Verificar se o usuário existe e ainda não tem senha
+    const usuario = banco.usuarios.find(user => user.username === username && user.password === null);
+
+    if (usuario) {
+        // Usuário está pré-cadastrado, agora cadastrar a senha
+        usuario.password = password; // Define a nova senha
+        fs.writeFileSync('banco.json', JSON.stringify(banco, null, 2));
+        res.json({ success: true, message: "Senha cadastrada com sucesso!" });
+    } else {
+        res.status(400).json({ success: false, message: "Usuário não encontrado ou já possui senha." });
+    }
 });
+
 
 // Rota de leitura do QR Code
 // Rota de leitura do QR Code
