@@ -112,6 +112,11 @@ app.post('/salvarProcedimento', (req, res) => {
     const { numero, usuario } = req.body;
     const banco = JSON.parse(fs.readFileSync('banco.json', 'utf8'));
 
+    // Verificar se o número do procedimento está no novo formato
+    if (!/^\d{3}-\d{5}\/\d{4}$/.test(numero)) {
+        return res.status(400).json({ success: false, message: "Formato inválido para o número do procedimento." });
+    }
+
     // Verificar se o procedimento já existe
     const procedimentoExistente = banco.procedimentos.find(p => p.numero === numero);
 
@@ -131,6 +136,7 @@ app.post('/salvarProcedimento', (req, res) => {
 
     res.json({ success: true, message: "Procedimento salvo com sucesso." });
 });
+
 
 
 
@@ -204,9 +210,15 @@ app.get('/dados', (req, res) => {
 });
 
 // Rota para consultar movimentação
+// Rota para consultar movimentação
 app.get('/consultaMovimentacao', (req, res) => {
     const { procedimento } = req.query;
     const banco = JSON.parse(fs.readFileSync('banco.json', 'utf8'));
+
+    // Verificar se o número do procedimento está no novo formato
+    if (!/^\d{3}-\d{5}\/\d{4}$/.test(procedimento)) {
+        return res.status(400).json({ success: false, message: "Formato inválido para o número do procedimento." });
+    }
 
     // Procurar o procedimento correspondente no banco de dados
     const procedimentoEncontrado = banco.procedimentos.find(p => p.numero === procedimento);
@@ -217,6 +229,7 @@ app.get('/consultaMovimentacao', (req, res) => {
         res.json({ success: false, message: "Procedimento não encontrado." });
     }
 });
+
 
 
 // Rota para pré-cadastrar um usuário

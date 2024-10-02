@@ -94,9 +94,10 @@ function register() {
 
 // Função para validar o formato do número de procedimento
 function validarProcedimento(numero) {
-    const regex = /^\d{3} - \d{5} \/ \d{4}$/; // Expressão regular para validar o formato xxx - xxxxx / xxxx
+    const regex = /^\d{3}-\d{5}\/\d{4}$/; // Novo formato: xxx-xxxxx/xxxx
     return regex.test(numero);
 }
+
 
 // Função para gerar o PDF
 function gerarPDF() {
