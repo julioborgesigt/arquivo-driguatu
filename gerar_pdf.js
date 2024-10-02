@@ -205,3 +205,47 @@ app.get('/consultaMovimentacao', (req, res) => {
         res.json({ success: false, message: "Procedimento não encontrado." });
     }
 });
+
+
+// Rota para pré-cadastrar um usuário
+app.post('/preCadastro', (req, res) => {
+    const { username } = req.body;
+    const banco = JSON.parse(fs.readFileSync('banco.json', 'utf8'));
+
+    if (banco.usuarios.find(user => user.username === username)) {
+        return res.json({ success: false, message: "Usuário já existe." });
+    }
+
+    banco.usuarios.push({ username, password: null }); // Usuário pré-cadastrado sem senha
+    fs.writeFileSync('banco.json', JSON.stringify(banco, null, 2));
+    res.json({ success: true, message: "Usuário pré-cadastrado com sucesso." });
+});
+
+// Rota para verificar se o usuário está pré-registrado
+app.get('/verificarUsuario', (req, res) => {
+    const { username } = req.query;
+    const banco = JSON.parse(fs.readFileSync('banco.json', 'utf8'));
+
+    const usuarioEncontrado = banco.usuarios.find(user => user.username === username && user.password === null);
+
+    if (usuarioEncontrado) {
+        res.json({ success: true });
+    } else {
+        res.json({ success: false, message: "Usuário não pré-registrado." });
+    }
+});
+
+// Rota para resetar senha
+app.post('/resetSenha', (req, res) => {
+    const { username } = req.body;
+    const banco = JSON.parse(fs.readFileSync('banco.json', 'utf8'));
+
+    const usuario = banco.usuarios.find(user => user.username === username);
+    if (usuario) {
+        usuario.password = null; // Reseta a senha
+        fs.writeFileSync('banco.json', JSON.stringify(banco, null, 2));
+        res.json({ success: true, message: "Senha resetada com sucesso." });
+    } else {
+        res.json({ success: false, message: "Usuário não encontrado." });
+    }
+});

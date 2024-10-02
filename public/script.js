@@ -30,27 +30,66 @@ function login() {
 
 
 
+// Função para validar o formato do nome de usuário (8 caracteres alfanuméricos)
+function validarUsername(username) {
+    const regex = /^[a-zA-Z0-9]{8}$/; // Exatamente 8 caracteres alfanuméricos
+    return regex.test(username);
+}
+
+// Função para validar o formato da senha (6 dígitos numéricos)
+function validarSenha(senha) {
+    const regex = /^\d{6}$/; // Exatamente 6 dígitos numéricos
+    return regex.test(senha);
+}
+
 // Função para realizar o cadastro
 function register() {
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
 
-    fetch('/register', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password })
-    })
+    // Validar formato do usuário
+    if (!validarUsername(username)) {
+        alert("O nome de usuário deve ter exatamente 8 caracteres alfanuméricos.");
+        return;
+    }
+
+    // Validar formato da senha
+    if (!validarSenha(password)) {
+        alert("A senha deve ter exatamente 6 dígitos numéricos.");
+        return;
+    }
+
+    // Verificar se o usuário está pré-registrado pelo administrador
+    fetch(`/verificarUsuario?username=${username}`)
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert("Cadastro realizado com sucesso!");
+            // Usuário está pré-registrado, continuar com o cadastro
+            fetch('/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Cadastro realizado com sucesso!");
+                } else {
+                    alert("Erro ao cadastrar usuário.");
+                }
+            });
         } else {
-            alert("Erro ao cadastrar usuário.");
+            alert("Usuário não pré-registrado. Por favor, contacte o administrador.");
         }
+    })
+    .catch(error => {
+        console.error('Erro ao verificar o usuário:', error);
+        alert("Erro ao verificar o usuário. Tente novamente.");
     });
 }
+
 
 
 // Função para validar o formato do número de procedimento
