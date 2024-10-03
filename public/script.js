@@ -251,3 +251,9 @@ function lerQRCode() {
         console.log(`Erro ao iniciar a câmera: ${err}`);
     });
 }
+
+
+function lerQRCodePage() {
+    window.location.href = "/leitor_qrcode.html";
+}
+
