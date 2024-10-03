@@ -1,4 +1,21 @@
-// Função para realizar o login
+// Função para verificar se o usuário já está logado
+document.addEventListener('DOMContentLoaded', () => {
+    const usuarioAtivo = localStorage.getItem('usuarioAtivo');
+    
+    if (usuarioAtivo) {
+        // Se o usuário já estiver logado, mostrar a interface do app
+        document.getElementById('auth-container').style.display = 'none';
+        document.getElementById('app-container').style.display = 'block';
+        document.getElementById('user-name').textContent = usuarioAtivo;
+    } else {
+        // Se não estiver logado, mostrar a interface de login
+        document.getElementById('auth-container').style.display = 'block';
+        document.getElementById('app-container').style.display = 'none';
+    }
+});
+
+
+
 // Função para realizar o login
 function login() {
     const username = document.getElementById('username').value;
@@ -27,6 +44,15 @@ function login() {
     })
     .catch(error => console.error('Erro ao realizar login:', error));
 }
+
+
+// Função para realizar o logout
+function logout() {
+    localStorage.removeItem('usuarioAtivo');
+    document.getElementById('auth-container').style.display = 'block';
+    document.getElementById('app-container').style.display = 'none';
+}
+
 
 
 
