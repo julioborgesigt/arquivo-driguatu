@@ -76,24 +76,16 @@ button:hover {
     align-items: center;
 }
 
-/* Centralizar e manter o QR box quadrado */
-#qr-reader > div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    z-index: 9999;  /* Garante que o vídeo apareça acima de qualquer elemento */
-}
-
-#qr-reader canvas, #qr-reader video {
-    width: 100% !important;  /* O vídeo ocupa a largura total */
-    height: 100% !important;  /* O vídeo ocupa a altura total */
-    object-fit: cover;  /* Garante que o vídeo preencha toda a área */
+#qr-reader video {
+    width: 100% !important;  /* Garante que o vídeo ocupe a área inteira */
+    height: 100% !important;  /* Garante que o vídeo ocupe a área inteira */
 }
 
 
 
-/* Estilos responsivos para o leitor de QR code 
+
+
+/* Estilos responsivos para o leitor de QR code */
 @media (orientation: portrait) {
     #qr-reader {
         flex-direction: column;
@@ -105,7 +97,7 @@ button:hover {
         flex-direction: row;
     }
 }
-*/
+
 
 
 /* Estilos Responsivos */
