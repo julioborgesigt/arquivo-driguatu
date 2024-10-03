@@ -189,7 +189,7 @@ function generateQRCode(text) {
 
 
 // Função para ler QR Code
-// Função para ler QR Code
+// Função para ler QR Code e ajustar a visualização
 function lerQRCode() {
     const qrReaderElement = document.getElementById("qr-reader");
     const usuarioAtivo = localStorage.getItem('usuarioAtivo'); // Pega o usuário logado
@@ -199,7 +199,13 @@ function lerQRCode() {
         return;
     }
 
-    qrReaderElement.style.display = "block"; // Mostrar o leitor de QR code
+    qrReaderElement.style.display = "flex"; // Mostrar o leitor de QR code
+    qrReaderElement.style.justifyContent = "center"; // Centralizar o leitor
+    qrReaderElement.style.alignItems = "center"; // Centralizar verticalmente
+    qrReaderElement.style.height = "100vh"; // Ocupa toda a altura da tela
+    qrReaderElement.style.width = "100vw"; // Ocupa toda a largura da tela
+    qrReaderElement.style.backgroundColor = "#000"; // Fundo preto para destaque
+
     const html5QrCode = new Html5Qrcode("qr-reader");
     let leituraEfetuada = false; // Flag para garantir que só uma leitura seja registrada
 
@@ -207,7 +213,8 @@ function lerQRCode() {
         { facingMode: "environment" },  // Câmera traseira
         {
             fps: 10,  // Taxa de quadros
-            qrbox: { width: 250, height: 250 }  // Tamanho da caixa de leitura
+            qrbox: { width: 250, height: 250 },  // Tamanho da caixa de leitura (quadrado central)
+            aspectRatio: 1.0  // Força o formato quadrado e a orientação vertical
         },
         qrCodeMessage => {
             if (!leituraEfetuada) {
@@ -246,6 +253,7 @@ function lerQRCode() {
         console.log(`Erro ao iniciar a câmera: ${err}`);
     });
 }
+
 
 
 

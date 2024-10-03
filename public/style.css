@@ -61,18 +61,43 @@ button:hover {
     background-color: #0056b3;
 }
 
-/* Centralização do Leitor de QR Code */
+
+/* Estilos para o leitor de QR Code */
 #qr-reader {
-    margin-top: 20px;
-    display: flex;
+    display: none; /* Oculto até ser ativado */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw; /* Ocupa toda a largura da tela */
+    height: 100vh; /* Ocupa toda a altura da tela */
+    background-color: #000; /* Fundo preto para destacar o leitor */
+    z-index: 9999; /* Garantir que o leitor fique acima de outros elementos */
     justify-content: center;
+    align-items: center;
 }
 
+/* Centralizar o leitor de QR code */
 #qr-reader > div {
     display: flex;
     justify-content: center;
     align-items: center;
 }
+
+/* Estilos responsivos para o leitor de QR code */
+@media (orientation: portrait) {
+    #qr-reader {
+        flex-direction: column;
+    }
+}
+
+@media (orientation: landscape) {
+    #qr-reader {
+        flex-direction: row;
+    }
+}
+
+
+
 
 /* Estilos Responsivos */
 @media (max-width: 768px) {
