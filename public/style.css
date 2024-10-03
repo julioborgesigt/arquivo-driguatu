@@ -64,14 +64,14 @@ button:hover {
 
 /* Estilos para o leitor de QR Code */
 #qr-reader {
-    display: none; /* Oculto até ser ativado */
+    display: none;  /* Oculto até ser ativado */
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw; /* Ocupa toda a largura da tela */
-    height: 100vh; /* Ocupa toda a altura da tela */
-    background-color: #000; /* Fundo preto para destacar o leitor */
-    z-index: 9999; /* Garantir que o leitor fique acima de outros elementos */
+    width: 100vw;  /* Ocupa toda a largura da tela */
+    height: 100vh;  /* Ocupa toda a altura da tela */
+    background-color: #000;  /* Fundo preto para destacar o leitor */
+    z-index: 9999;  /* Garantir que o leitor fique acima de outros elementos */
     justify-content: center;
     align-items: center;
 }
@@ -81,12 +81,16 @@ button:hover {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
+    z-index: 9999;  /* Garante que o vídeo apareça acima de qualquer elemento */
 }
 
-#qr-reader canvas {
-    width: 250px !important;
-    height: 250px !important; /* Mantém o formato quadrado */
+#qr-reader canvas, #qr-reader video {
+    width: 100% !important;  /* O vídeo ocupa a largura total */
+    height: 100% !important;  /* O vídeo ocupa a altura total */
+    object-fit: cover;  /* Garante que o vídeo preencha toda a área */
 }
+
 
 
 /* Estilos responsivos para o leitor de QR code */

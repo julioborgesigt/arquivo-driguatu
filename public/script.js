@@ -189,7 +189,6 @@ function generateQRCode(text) {
 
 
 // Função para ler QR Code
-// Função para ler QR Code e ajustar a visualização
 function lerQRCode() {
     const qrReaderElement = document.getElementById("qr-reader");
     const usuarioAtivo = localStorage.getItem('usuarioAtivo'); // Pega o usuário logado
@@ -199,7 +198,7 @@ function lerQRCode() {
         return;
     }
 
-    // Ocultar os outros elementos da página
+    // Ocultar outros elementos da página
     document.getElementById("app-container").style.display = "none";
 
     // Mostrar o leitor de QR code em tela cheia
@@ -211,18 +210,18 @@ function lerQRCode() {
     qrReaderElement.style.backgroundColor = "#000";  // Fundo preto para destacar o leitor
 
     const html5QrCode = new Html5Qrcode("qr-reader");
-    let leituraEfetuada = false; // Flag para garantir que só uma leitura seja registrada
+    let leituraEfetuada = false;  // Flag para garantir que só uma leitura seja registrada
 
     html5QrCode.start(
         { facingMode: "environment" },  // Câmera traseira
         {
             fps: 10,  // Taxa de quadros
-            qrbox: { width: 250, height: 250 },  // Mantém o formato quadrado
+            qrbox: 250,  // Tamanho do quadrado de leitura
             aspectRatio: 1.0  // Força o formato quadrado
         },
         qrCodeMessage => {
             if (!leituraEfetuada) {
-                leituraEfetuada = true; // Marca como já lido para evitar múltiplas leituras
+                leituraEfetuada = true;  // Evita múltiplas leituras
 
                 fetch('/leitura', {
                     method: 'POST',
@@ -234,10 +233,10 @@ function lerQRCode() {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        alert(data.message); // Exibe mensagem de sucesso
+                        alert(data.message);  // Exibe mensagem de sucesso
                         window.location.href = `/comprovante?procedimento=${data.procedimento}`;
                     } else {
-                        alert("Erro: " + data.message); // Exibe mensagem de erro
+                        alert("Erro: " + data.message);  // Exibe mensagem de erro
                     }
                     html5QrCode.stop();  // Para o leitor de QR code
                     qrReaderElement.style.display = "none";  // Esconder o leitor
@@ -257,8 +256,12 @@ function lerQRCode() {
         }
     ).catch(err => {
         console.log(`Erro ao iniciar a câmera: ${err}`);
+        alert("Erro ao iniciar a câmera. Por favor, verifique as permissões e tente novamente.");
+        qrReaderElement.style.display = "none";  // Esconder o leitor se houver erro
+        document.getElementById("app-container").style.display = "block";  // Mostrar a página novamente
     });
 }
+
 
 
 
