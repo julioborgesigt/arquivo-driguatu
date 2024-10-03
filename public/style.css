@@ -76,19 +76,18 @@ button:hover {
     align-items: center;
 }
 
-/* Centralizar o leitor de QR code */
-
-#qr-reader {
-    margin-top: 20px;
-    display: flex;
-    justify-content: center;
-}
-
+/* Centralizar e manter o QR box quadrado */
 #qr-reader > div {
     display: flex;
     justify-content: center;
     align-items: center;
 }
+
+#qr-reader canvas {
+    width: 250px !important;
+    height: 250px !important; /* Mantém o formato quadrado */
+}
+
 
 /* Estilos responsivos para o leitor de QR code */
 @media (orientation: portrait) {
