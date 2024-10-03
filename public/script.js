@@ -199,6 +199,9 @@ function lerQRCode() {
         return;
     }
 
+    // Esconder os demais elementos da página
+    document.getElementById("app-container").style.display = "none";
+    
     qrReaderElement.style.display = "flex"; // Mostrar o leitor de QR code
     qrReaderElement.style.justifyContent = "center"; // Centralizar o leitor
     qrReaderElement.style.alignItems = "center"; // Centralizar verticalmente
@@ -213,8 +216,8 @@ function lerQRCode() {
         { facingMode: "environment" },  // Câmera traseira
         {
             fps: 10,  // Taxa de quadros
-            qrbox: { width: 250, height: 250 },  // Tamanho da caixa de leitura (quadrado central)
-            aspectRatio: 1.0  // Força o formato quadrado e a orientação vertical
+            qrbox: { width: 250, height: 250 },  // Mantém o formato quadrado
+            aspectRatio: 1.0  // Força o formato quadrado
         },
         qrCodeMessage => {
             if (!leituraEfetuada) {
@@ -237,12 +240,14 @@ function lerQRCode() {
                     }
                     html5QrCode.stop(); // Para o leitor de QR code
                     qrReaderElement.style.display = "none"; // Esconder o leitor
+                    document.getElementById("app-container").style.display = "block"; // Mostrar a página novamente
                 })
                 .catch(error => {
                     console.error('Erro ao registrar leitura:', error);
                     alert('Erro ao registrar leitura. Tente novamente.');
                     html5QrCode.stop();
-                    qrReaderElement.style.display = "none";
+                    qrReaderElement.style.display = "none"; // Esconder o leitor
+                    document.getElementById("app-container").style.display = "block"; // Mostrar a página novamente
                 });
             }
         },
@@ -253,6 +258,7 @@ function lerQRCode() {
         console.log(`Erro ao iniciar a câmera: ${err}`);
     });
 }
+
 
 
 
