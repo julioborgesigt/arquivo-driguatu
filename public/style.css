@@ -90,6 +90,7 @@ button:hover {
 
 
 
+
 /* Estilos responsivos para o leitor de QR code */
 @media (orientation: portrait) {
     #qr-reader {
