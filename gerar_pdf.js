@@ -293,10 +293,9 @@ app.get('/administrador.html', (req, res) => {
 
 
 
-const express = require('express');
+
 const nodemailer = require('nodemailer');
 
-app.use(express.json());
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',  // Usar Gmail (ou outro serviço)
