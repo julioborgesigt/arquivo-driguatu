@@ -291,7 +291,7 @@ app.get('/administrador.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'administrador.html'));
 });
 
-
+/*
 
 
 const nodemailer = require('nodemailer');
@@ -330,6 +330,8 @@ app.post('/enviar-codigo', (req, res) => {
         return res.status(400).json({ success: false, message: 'E-mail inválido.' });
     }
 });
+*/
+
 
 // Inicia o servidor
 app.listen(3000, () => {
