@@ -279,3 +279,9 @@ app.post('/resetSenha', (req, res) => {
 app.get('/administrador', (req, res) => {
     res.sendFile(path.join(__dirname, 'administrador.html'));
 });
+
+
+// Servir a página login_admin.html
+app.get('/login_admin.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'login_admin.html'));
+});
