@@ -56,17 +56,10 @@ function resetarSenha() {
 }
 
 
+// Variável global para armazenar o código gerado
+let codigoGerado = '';
 
-const nodemailer = require('nodemailer');
-
-let transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: process.env.arquivodriguatu,  // Seu e-mail
-        pass: process.env.algoritimo   // Sua senha segura (use um App Password para Gmail)
-    }
-});
-
+// Função para enviar o código ao e-mail
 function enviarCodigo() {
     const email = document.getElementById('admin-email').value;
     
@@ -74,27 +67,28 @@ function enviarCodigo() {
         // Gerar código aleatório de 6 dígitos
         codigoGerado = Math.floor(100000 + Math.random() * 900000).toString();
 
-        // Configurar o e-mail
-        let mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: 'Código de Login de Administrador',
-            text: 'Seu código de acesso é: ' + codigoGerado
-        };
-
-        // Enviar o e-mail
-        transporter.sendMail(mailOptions, function(error, info) {
-            if (error) {
-                console.log(error);
-                alert('Erro ao enviar o e-mail. Tente novamente.');
-            } else {
-                console.log('E-mail enviado: ' + info.response);
+        // Fazer a requisição POST para o servidor enviar o e-mail
+        fetch('/enviar-codigo', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, codigo: codigoGerado })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
                 alert('O código foi enviado para o e-mail ' + email);
-                
                 // Exibir o campo para inserir o código
                 document.getElementById('email-form').style.display = 'none';
                 document.getElementById('codigo-form').style.display = 'block';
+            } else {
+                alert(data.message);
             }
+        })
+        .catch(error => {
+            console.error('Erro ao enviar o código:', error);
+            alert('Erro ao enviar o código. Tente novamente.');
         });
     } else {
         alert('E-mail inválido.');
@@ -102,16 +96,4 @@ function enviarCodigo() {
 }
 
 
-// Função para verificar o código digitado
-function verificarCodigo() {
-    const codigoDigitado = document.getElementById('admin-codigo').value;
-    
-    if (codigoDigitado === codigoGerado) {
-        alert('Código verificado com sucesso!');
-        sessionStorage.setItem('adminLogado', true); // Marcar como logado
-        window.location.href = '/administrador.html'; // Redirecionar
-    } else {
-        alert('Código inválido.');
-    }
-}
 

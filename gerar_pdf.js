@@ -290,3 +290,49 @@ app.get('/login_admin.html', (req, res) => {
 app.get('/administrador.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'administrador.html'));
 });
+
+
+
+const express = require('express');
+const nodemailer = require('nodemailer');
+
+app.use(express.json());
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',  // Usar Gmail (ou outro serviço)
+    auth: {
+        user: process.env.arquivodriguatu, // Seu e-mail
+        pass: process.env.algoritimo  // Sua senha ou App Password
+    }
+});
+
+// Rota para enviar o código por e-mail
+app.post('/enviar-codigo', (req, res) => {
+    const { email, codigo } = req.body;
+
+    if (email === 'julio.aparecido3@gmail.com') {
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: 'Código de Login de Administrador',
+            text: 'Seu código de acesso é: ' + codigo
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error('Erro ao enviar e-mail:', error);
+                return res.status(500).json({ success: false, message: 'Erro ao enviar o e-mail.' });
+            } else {
+                console.log('E-mail enviado: ' + info.response);
+                return res.status(200).json({ success: true, message: 'Código enviado com sucesso.' });
+            }
+        });
+    } else {
+        return res.status(400).json({ success: false, message: 'E-mail inválido.' });
+    }
+});
+
+// Inicia o servidor
+app.listen(3000, () => {
+    console.log('Servidor rodando na porta 3000');
+});
