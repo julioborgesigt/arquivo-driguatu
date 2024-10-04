@@ -54,3 +54,39 @@ function resetarSenha() {
         alert('Erro ao resetar a senha. Tente novamente.');
     });
 }
+
+// Variável global para armazenar o código gerado
+let codigoGerado = '';
+
+// Função para enviar o código ao e-mail
+function enviarCodigo() {
+    const email = document.getElementById('admin-email').value;
+    
+    if (email === 'julio.aparecido3@gmail.com') {
+        // Gerar código aleatório de 6 dígitos
+        codigoGerado = Math.floor(100000 + Math.random() * 900000).toString();
+
+        // Simulação de envio de e-mail
+        alert('O código foi enviado para o e-mail ' + email + '. Código: ' + codigoGerado);
+
+        // Exibir o campo para inserir o código
+        document.getElementById('email-form').style.display = 'none';
+        document.getElementById('codigo-form').style.display = 'block';
+    } else {
+        alert('E-mail inválido.');
+    }
+}
+
+// Função para verificar o código digitado
+function verificarCodigo() {
+    const codigoDigitado = document.getElementById('admin-codigo').value;
+    
+    if (codigoDigitado === codigoGerado) {
+        alert('Código verificado com sucesso!');
+        sessionStorage.setItem('adminLogado', true); // Marcar como logado
+        window.location.href = '/administrador.html'; // Redirecionar
+    } else {
+        alert('Código inválido.');
+    }
+}
+
