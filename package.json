@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.21.0",
+    "express": "^2.5.11",
     "json-server": "^1.0.0-beta.3",
     "jspdf": "^2.5.2",
     "nodemailer": "^6.9.15",
