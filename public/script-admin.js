@@ -55,10 +55,18 @@ function resetarSenha() {
     });
 }
 
-// Variável global para armazenar o código gerado
-let codigoGerado = '';
 
-// Função para enviar o código ao e-mail
+
+const nodemailer = require('nodemailer');
+
+let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.arquivodriguatu,  // Seu e-mail
+        pass: process.env.algoritimo   // Sua senha segura (use um App Password para Gmail)
+    }
+});
+
 function enviarCodigo() {
     const email = document.getElementById('admin-email').value;
     
@@ -66,16 +74,33 @@ function enviarCodigo() {
         // Gerar código aleatório de 6 dígitos
         codigoGerado = Math.floor(100000 + Math.random() * 900000).toString();
 
-        // Simulação de envio de e-mail
-        alert('O código foi enviado para o e-mail ' + email + '. Código: ' + codigoGerado);
+        // Configurar o e-mail
+        let mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: 'Código de Login de Administrador',
+            text: 'Seu código de acesso é: ' + codigoGerado
+        };
 
-        // Exibir o campo para inserir o código
-        document.getElementById('email-form').style.display = 'none';
-        document.getElementById('codigo-form').style.display = 'block';
+        // Enviar o e-mail
+        transporter.sendMail(mailOptions, function(error, info) {
+            if (error) {
+                console.log(error);
+                alert('Erro ao enviar o e-mail. Tente novamente.');
+            } else {
+                console.log('E-mail enviado: ' + info.response);
+                alert('O código foi enviado para o e-mail ' + email);
+                
+                // Exibir o campo para inserir o código
+                document.getElementById('email-form').style.display = 'none';
+                document.getElementById('codigo-form').style.display = 'block';
+            }
+        });
     } else {
         alert('E-mail inválido.');
     }
 }
+
 
 // Função para verificar o código digitado
 function verificarCodigo() {
