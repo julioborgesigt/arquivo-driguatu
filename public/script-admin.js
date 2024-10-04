@@ -56,8 +56,7 @@ function resetarSenha() {
 }
 
 
-// Variável global para armazenar o código gerado
-let codigoGerado = '';
+/*
 
 // Função para enviar o código ao e-mail
 function enviarCodigo() {
@@ -95,5 +94,5 @@ function enviarCodigo() {
     }
 }
 
-
+*/
 
